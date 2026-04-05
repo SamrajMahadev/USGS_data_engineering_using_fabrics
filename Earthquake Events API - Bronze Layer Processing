@@ -20,7 +20,3 @@ if response.status_code == 200:
     print(f"json file saved successfully{file_path}")
 else:
     print("recheck the codes, try again...!!\n status code:", response.status_code)
-
-df = spark.read.option("multiline", "true").json("Files/2026-03-28_earthquake.json")
-# df now is a Spark DataFrame containing JSON data from "Files/2026-03-28_earthquake.json".
-display(df)
