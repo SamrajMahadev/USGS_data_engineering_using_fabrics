@@ -1,6 +1,10 @@
 import requests
 import json
+import datetime as dt
 
+# start date will be last 7 days from todays date and end date will be yesterday
+start_date = dt.date.today() - dt.timedelta(7)
+end_date = dt.date.today() - dt.timedelta(1)
 
 # http link
 url = f'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={start_date}&endtime={end_date}'
