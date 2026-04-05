@@ -1,0 +1,27 @@
+import requests
+import json
+
+
+# http link
+url = f'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={start_date}&endtime={end_date}'
+
+#parse the url using GET
+response = requests.get(url)
+
+if response.status_code == 200:
+    data = response.json()
+    data = data['features']
+
+    # define the file path to save the data file
+    file_path = f'/lakehouse/default/Files/{start_date}_earthquake.json'
+
+    with open(file_path, 'w') as file:
+        json.dump(data,file,indent=4)
+    
+    print(f"json file saved successfully{file_path}")
+else:
+    print("recheck the codes, try again...!!\n status code:", response.status_code)
+
+df = spark.read.option("multiline", "true").json("Files/2026-03-28_earthquake.json")
+# df now is a Spark DataFrame containing JSON data from "Files/2026-03-28_earthquake.json".
+display(df)
