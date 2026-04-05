@@ -2,7 +2,7 @@ from pyspark.sql.functions import col
 from pyspark.sql.types import TimestampType
 
 # df now is the spark dataframe 
-df = spark.read.option("multiline","true").json('Files/2026-03-28_earthquake.json')
+df = spark.read.option("multiline","true").json('Files/{start_date}_earthquake.json')
 
 # reshape earthquake data by extracting and renaming key attributes
 df = \
