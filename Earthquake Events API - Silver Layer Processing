@@ -1,0 +1,32 @@
+from pyspark.sql.functions import col
+from pyspark.sql.types import TimestampType
+
+# df now is the spark dataframe 
+df = spark.read.option("multiline","true").json('Files/2026-03-28_earthquake.json')
+
+# reshape earthquake data by extracting and renaming key attributes
+df = \
+df.\
+    select(
+        'id'
+        ,col('geometry.coordinates')[0].alias('longitude')
+        ,col('geometry.coordinates')[1].alias('latitude')
+        ,col('geometry.coordinates')[2].alias('elevation')
+        ,col('properties.title').alias('title')
+        ,col('properties.place').alias('place')
+        ,col('properties.sig').alias('significanceSorce')
+        ,col('properties.mag').alias('magnitude')
+        ,col('properties.magType').alias('magnitudeType')
+        ,col('properties.time').alias('earthquakeDTTM')
+        ,col('properties.updated').alias('updatedDTTM')
+    )
+
+# converting the earthquake time and updated time from millisecond to clear date time format    
+df = df.\
+    withColumn('earthquakeDTTM', col('earthquakeDTTM')/1000).\
+    withColumn('updatedDTTM', col('updatedDTTM')/1000).\
+    withColumn('earthquakeDTTM', col('earthquakeDTTM').cast(TimestampType())).\
+    withColumn('updatedDTTM', col('updatedDTTM').cast(TimestampType()))
+
+# save the structed data in table formate for GOLD Layer
+df.write.mode('append').saveAsTable('earthquake_events_silver')
